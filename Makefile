@@ -36,11 +36,11 @@ check: deps/couch/test/etap/etap.beam deps/couch/test/etap/test_util.beam deps/c
 		prove -v deps/couch/test/etap/*.t
 
 dist: compile
-	@rm -rf rel/rcouch
+	@rm -rf rel/refuge
 	@./rebar generate
 
 distclean: clean
-	@rm -rf rel/rcouch
+	@rm -rf rel/refuge
 	@rm -rf rel/dev*
 	@rm -f rel/couchdb.config
 	@rm -rf deps
@@ -51,45 +51,45 @@ install: dist
 	@echo "==> install to $(DESTDIR)$(PREFIX)"
 	@mkdir -p $(DESTDIR)$(PREFIX)
 	@for D in bin erts-* lib releases share; do\
-		cp -R rel/rcouch/$$D $(DESTDIR)$(PREFIX) ; \
+		cp -R rel/refuge/$$D $(DESTDIR)$(PREFIX) ; \
 	done
 	@mkdir -p $(DESTDIR)$(SYSCONF_DIR)
-	@cp -R rel/rcouch/etc/*  $(DESTDIR)$(SYSCONF_DIR)
+	@cp -R rel/refuge/etc/*  $(DESTDIR)$(SYSCONF_DIR)
 	@mkdir -p $(DESTDIR)$(DATADIR)
-	@chown -R $(RCOUCH_USER) $(DESTDIR)$(DATADIR)
+	@chown -R $(REFUGE_USER) $(DESTDIR)$(DATADIR)
 	@mkdir -p $(DESTDIR)$(VIEWDIR)
-	@chown $(RCOUCH_USER) $(DESTDIR)$(VIEWDIR)
+	@chown $(REFUGE_USER) $(DESTDIR)$(VIEWDIR)
 	@mkdir -p $(DESTDIR)$(LOGDIR)
-	@touch $(DESTDIR)$(LOGDIR)/rcouch.log
-	@chown $(RCOUCH_USER) $(DESTDIR)$(LOGDIR)/rcouch.log
+	@touch $(DESTDIR)$(LOGDIR)/refuge.log
+	@chown $(REFUGE_USER) $(DESTDIR)$(LOGDIR)/refuge.log
 	@mkdir -p $(DESTDIR)$(RUNDIR)
-	@chown -R $(RCOUCH_USER) $(DESTDIR)$(RUNDIR)
+	@chown -R $(REFUGE_USER) $(DESTDIR)$(RUNDIR)
 
 deps-snapshot: clean
-	@rm -rf rcouch-deps-$(OS)-$(ARCH).tar.gz
+	@rm -rf refuge-deps-$(OS)-$(ARCH).tar.gz
 	(cd deps && \
-		tar cvzf ../rcouch-deps-$(VERSION)-$(OS)-$(ARCH).tar.gz .)
+		tar cvzf ../refuge-deps-$(VERSION)-$(OS)-$(ARCH).tar.gz .)
 
 archive: dist
 	@rm -rf $(DISTDIR)
-	@rm -f rcouch-$(VERSION)-$(OS)-$(ARCH).tar.gz
+	@rm -f refuge-$(VERSION)-$(OS)-$(ARCH).tar.gz
 	@mkdir -p $(DISTDIR)$(PREFIX)
-	@cp -R rel/rcouch/* $(DISTDIR)/$(PREFIX)
+	@cp -R rel/refuge/* $(DISTDIR)/$(PREFIX)
 	@for D in bin erts-* lib releases share; do\
-		cp -R rel/rcouch/$$D $(DISTDIR)$(PREFIX) ; \
+		cp -R rel/refuge/$$D $(DISTDIR)$(PREFIX) ; \
 	done
-	@mkdir -p $(DISTDIR)$(SYSCONF_DIR)/rcouch
-	@cp -R rel/rcouch/etc/*  $(DISTDIR)$(SYSCONF_DIR)/rcouch/
+	@mkdir -p $(DISTDIR)$(SYSCONF_DIR)/refuge
+	@cp -R rel/refuge/etc/*  $(DISTDIR)$(SYSCONF_DIR)/refuge/
 	@mkdir -p $(DISTDIR)$(LOGDIR)
 	@mkdir -p $(DISTDIR)$(RUNDIR)
 	@mkdir -p $(DISTDIR)$(DATADIR)
 	@mkdir -p $(DISTDIR)$(VIEWDIR)
-	@touch $(DISTDIR)$(PREFIX)/var/log/rcouch.log
+	@touch $(DISTDIR)$(PREFIX)/var/log/refuge.log
 	@for F in LICENSE NOTICE README ; do \
 		cp -f $$F $(DISTDIR)$(PREFIX) ; \
 	done
 	(cd $(DISTDIR) && \
-		tar -cvzf ../rcouch-$(VERSION)-$(OS)-$(ARCH).tar.gz .)
+		tar -cvzf ../refuge-$(VERSION)-$(OS)-$(ARCH).tar.gz .)
 
 dev: all
 	@rm -rf rel/tmpdata
@@ -97,4 +97,4 @@ dev: all
 	@echo "==> Building development node (ports 15984/15986)"
 	@./rebar generate target_dir=dev overlay_vars=dev.config
 	@echo "\n\
-Development node is built, and can be started using ./rel/dev/bin/rcouch.\n" 
+Development node is built, and can be started using ./rel/dev/bin/refuge.\n" 

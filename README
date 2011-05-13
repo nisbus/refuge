@@ -1,15 +1,16 @@
-Refuge CouchDB - Alternate couchdb version
-------------------------------------------
+refuge - Data should be yours
+-----------------------------
 
-Refuge CouchDB is a custom distribution of Apache CouchDB using rebar.
-The purpose of this project is to provide a CouchDB base for the refuge
-project, but it can also be used to deploy an Apache CouchDB based
-product on your machine.
+Refuge main goal is to design an opensource, free, decentralized and
+secured and eventually anonymous platform. This platform will allow to
+share, render information and exchange messages offline or online.
+Information is on each nodes.
+
 
 Features:
 ---------
 
-- Apache CouchDB 1.2x based (current trunk right now)
+- Apache CouchDB 1.1x based (current trunk right now)
 - Geocouch integrated
 - Fast json encoding/decoding using ejson module.
 - Javascript engine is Spidermonkey 0.8.5
@@ -29,11 +30,11 @@ Supported platforms
 Download binaries
 -----------------
 
-Get binaries from http://rcouch.refuge.io/dl 
+Get binaries from http://refuge.io/dl 
 
 then do:
 
-$ tar xvzf rcouch-0.3-$PLATFORM.tar.gz -C /
+$ tar xvzf refuge-${VERSION}-$PLATFORM.tar.gz -C /
 
 Install from source
 -------------------
@@ -60,4 +61,4 @@ To just run dev version:
 
  $ make dev
 
-More info on http://rcouch.refuge.io .
+More info on http://refuge.io .

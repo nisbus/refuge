@@ -17,8 +17,8 @@ ARCH=`uname -m`
 VERSION=`git describe --tags`
 
 # PREFIX is by default the current directory
-PREFIX="/opt/rcouch"
-RCOUCH_USER=`whoami`
+PREFIX="/opt/refuge"
+REFUGE_USER=`whoami`
 ABSPATH="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 if test ! -n "$DIRPATH"; then DIRPATH=`dirname "$ABSPATH"`; fi
 
@@ -76,7 +76,7 @@ do
       shift 2
     ;;
     -u)
-      RCOUCH_USER=$2
+      REFUGE_USER=$2
       shift 2
     ;;
     -r)
@@ -84,7 +84,7 @@ do
       shift 2
       ;;
     -R)
-      RCOUCH_USER=rcouch
+      REFUGE_USER=refuge
       shift 1 
     ;;
     -s)
@@ -105,16 +105,16 @@ if test ! -n "$RUN"; then RUN="$PREFIX/var/run"; fi
 if test ! -n "$LOG"; then LOG="$PREFIX/var/log"; fi
 
 
-echo "==> configuring rcouch in rel/rcouch.config"
-cat > rel/rcouch.config << EOF
+echo "==> configuring refuge in rel/refuge.config"
+cat > rel/refuge.config << EOF
 {prefix, "$PREFIX"}.
 {data_dir, "$DATA"}.
 {view_dir, "$VIEW"}.
 {sysconf_dir, "$SYSCONF"}.
 {run_dir, "$RUN"}.
 {log_dir, "$LOG"}.
-{user, "$RCOUCH_USER"}.
-{node_name, "-sname rcouch"}.
+{user, "$REFUGE_USER"}.
+{node_name, "-sname refuge"}.
 {couchdb_port, 5984}.
 {ssl_port, 6986}.
 EOF
@@ -127,7 +127,7 @@ VIEWDIR = $VIEW
 SYSCONF_DIR = $SYSCONF
 RUNDIR = $RUN
 LOGDIR = $LOG
-RCOUCH_USER = $RCOUCH_USER
+REFUGE_USER = $REFUGE_USER
 OS = $OS
 ARCH = $ARCH
 VERSION = $VERSION
@@ -142,10 +142,10 @@ cat > rel/dev.config << EOF
 {sysconf_dir, "$DIRPATH/rel/dev/etc"}.
 {run_dir, "$DIRPATH/rel/dev/var/run"}.
 {log_dir, "$DIRPATH/rel/dev/var/log"}.
-{user, "$RCOUCH_USER"}.
+{user, "$REFUGE_USER"}.
 {node_name, "-name dev@127.0.0.1"}.
 {couchdb_port, 15984}.
 {ssl_port, 16986}.
 EOF
 
-cat rel/rcouch.config
+cat rel/refuge.config

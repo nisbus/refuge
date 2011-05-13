@@ -26,20 +26,20 @@ export PROGNAME=`echo $0 | sed 's/.*\///'`
 
 RECURSED=false
 BACKGROUND=false
-PIDFILE={{run_dir}}/rcouch.pid
+PIDFILE={{run_dir}}/refuge.pid
 HEART_BEAT_TIMEOUT=11
-HEART_COMMAND="$ROOTDIR/bin/rcouch -k"
+HEART_COMMAND="$ROOTDIR/bin/refuge -k"
 KILL=false
 RESPAWN_TIMEOUT=0
 SHUTDOWN=false
-STDERR_FILE=rcouch.stderr
-STDOUT_FILE=rcouch.stdout
-RCOUCH_USER={{user}}
-DEFAULT_CONFIG_DIR={{sysconf_dir}}/rcouch/default.d
-DEFAULT_CONFIG_FILE={{sysconf_dir}}/rcouch/default.ini
-LOCAL_CONFIG_DIR={{sysconf_dir}}/rcouch/local.d
-LOCAL_CONFIG_FILE={{sysconf_dir}}/rcouch/local.ini
-VM_ARGS={{sysconf_dir}}/rcouch/vm.args
+STDERR_FILE=refuge.stderr
+STDOUT_FILE=refuge.stdout
+REFUGE_USER={{user}}
+DEFAULT_CONFIG_DIR={{sysconf_dir}}/refuge/default.d
+DEFAULT_CONFIG_FILE={{sysconf_dir}}/refuge/default.ini
+LOCAL_CONFIG_DIR={{sysconf_dir}}/refuge/local.d
+LOCAL_CONFIG_FILE={{sysconf_dir}}/refuge/local.ini
+VM_ARGS={{sysconf_dir}}/refuge/vm.args
 
 print_arguments=""
 start_arguments=""
@@ -80,7 +80,7 @@ display_error () {
 pid_touch ()
 {
     touch $PIDFILE
-    chown $RCOUCH_USER $PIDFILE
+    chown $REFUGE_USER $PIDFILE
 }
 
 _get_pid () {
@@ -139,7 +139,7 @@ check_status () {
     PID=`_get_pid`
     if test -n "$PID"; then
         if kill -0 $PID 2> /dev/null; then
-            echo "Refuge CouchDB is running as process $PID, time to relax."
+            echo "Refuge is running as process $PID, time to relax."
             return 0
         else
             echo >&2 << EOF
@@ -147,7 +147,7 @@ Refuge CouchDB is not running but a stale PID file exists: $PIDFILE"
 EOF
         fi
     else
-        echo "Apache CouchDB is not running." >&2
+        echo "Refuge is not running." >&2
     fi
     return 1 
 }
@@ -155,14 +155,14 @@ EOF
 start_couchdb () 
 {
     command=" $BINDIR/erlexec \
-        -boot $ROOTDIR/releases/$APP_VSN/rcouch \
+        -boot $ROOTDIR/releases/$APP_VSN/refuge \
         -args_file $VM_ARGS \
         -couch_ini $start_arguments"
 
     if test "$BACKGROUND" = "true" -a "$RECURSED" = "false"; then
         $0 $background_start_arguments -b -r $RESPAWN_TIMEOUT \
-            -p $PIDFILE -u $RCOUCH_USER -o $STDOUT_FILE -e $STDERR_FILE -R &
-        echo "Apache CouchDB has started, time to relax."
+            -p $PIDFILE -u $REFUGE_USER -o $STDOUT_FILE -e $STDERR_FILE -R &
+        echo "Refuge has started."
     else
         if test "$RECURSED" = "true"; then
             pid_touch
@@ -207,23 +207,23 @@ stop_couchdb ()
         if kill -0 $PID 2> /dev/null; then
             if kill -1 $PID 2> /dev/null; then
                 if test "$1" = "false"; then
-                    echo "Apache CouchDB has been shutdown."
+                    echo "Refuge has been shutdown."
                 else
-                    echo "Apache CouchDB has been killed."
+                    echo "Refuge has been killed."
                 fi
                 return 0 
             else
-                echo "Apache CouchDB could not be killed." >&2
+                echo "Refuge could not be killed." >&2
                 return 1 
             fi
             if test "$1" = "false"; then
-                echo "Stale PID file exists but Apache CouchDB is not running."
+                echo "Stale PID file exists but Refuge is not running."
             else
-                echo "Stale PID file existed but Apache CouchDB is not running."
+                echo "Stale PID file existed but Refuge is not running."
             fi
         fi
     else
-        @echo "Apache CouchDB is not running."
+        @echo "Refuge is not running."
     fi
 }
 
@@ -246,7 +246,7 @@ parse_script_option_list ()
             -c) shift; _print_config; exit;;
             -b) shift; BACKGROUND=true;;
             -p) shift; PIDFILE=$1; shift;;
-            -u) shift; RCOUCH_USER=$1; shift;;
+            -u) shift; REFUGE_USER=$1; shift;;
             -r) shift; RESPAWN_TIMEOUT=$1; shift;;
             -R) shift; RECURSED=true;;
             -o) shift; STDOUT_FILE=$1; shift;;
