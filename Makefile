@@ -28,10 +28,6 @@ deps:
 clean:
 	@./rebar clean
 
-check:
-	@(cd deps/couch && \
-		make check)
-
 dist: compile
 	@rm -rf rel/refuge
 	@./rebar generate
