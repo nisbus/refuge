@@ -28,12 +28,9 @@ deps:
 clean:
 	@./rebar clean
 
-%.beam: %.erl
-	@erlc -o deps/couch/test/etap/ $<
- 
-check: deps/couch/test/etap/etap.beam deps/couch/test/etap/test_util.beam deps/couch/test/etap/test_web.beam
-	@ERL_FLAGS="-pa `pwd`/deps/couch/ebin `pwd`/deps/couch/test/etap" \
-		prove -v deps/couch/test/etap/*.t
+check:
+	@(cd deps/couch && \
+		make check)
 
 dist: compile
 	@rm -rf rel/refuge
