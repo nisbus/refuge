@@ -152,16 +152,17 @@ EOF
     return 1 
 }
 
-start_couchdb () 
+start_refuge () 
 {
-    command=" $BINDIR/erlexec \
+    command="$BINDIR/erlexec \
         -boot $ROOTDIR/releases/$APP_VSN/refuge \
         -args_file $VM_ARGS \
         -couch_ini $start_arguments"
 
     if test "$BACKGROUND" = "true" -a "$RECURSED" = "false"; then
         $0 $background_start_arguments -b -r $RESPAWN_TIMEOUT \
-            -p $PIDFILE -u $REFUGE_USER -o $STDOUT_FILE -e $STDERR_FILE -R &
+            -p $PIDFILE -u $REFUGE_USER -o $STDOUT_FILE \
+            -e $STDERR_FILE -R &
         echo "Refuge has started."
     else
         if test "$RECURSED" = "true"; then
@@ -197,7 +198,7 @@ EOF
     fi
 }
 
-stop_couchdb ()
+stop_refuge ()
 {
     PID=`_get_pid`
     if test -n "$PID"; then
@@ -231,7 +232,7 @@ parse_script_option_list ()
 {
     _load_config    
     set +e
-    options=`getopt ha:A:npbp:u:r:Ro:e:skd $@`
+    options=`getopt ha:A:nbp:u:r:Ro:e:skd $@`
     if test ! $? -eq 0; then
         display_error
     fi
@@ -259,9 +260,9 @@ parse_script_option_list ()
         esac
     done
     if test "$KILL" = "true" -o "$SHUTDOWN" = "true"; then
-        stop_couchdb $KILL
+        stop_refuge $KILL
     else
-        start_couchdb
+        start_refuge
     fi
 }
 
