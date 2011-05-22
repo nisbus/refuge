@@ -3,8 +3,8 @@
 *.Tpo
 *.beam
 erl_crash.dump
-rel/refuge-*.tar.gz
-rel/refuge.config
+rel/rcouch-*.tar.gz
+
 
 rel/archive
 

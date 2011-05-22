@@ -15,7 +15,6 @@
 OS=`uname -s`
 ARCH=`uname -m`
 VERSION=`git describe --tags`
-REBAR_CONF="rebar.config"
 
 # PREFIX is by default the current directory
 PREFIX="/opt/refuge"
@@ -45,8 +44,7 @@ Usage: $basename [OPTION]
   -v VIEW     set the view directory ($PREFIX/var/lib)
   -u USER     set the user directory
   -r RUN      set the run directory ($PREFIX/var/run)
-  -s SYSCONF  set the sysconf directory ($PREFIX/etc)
-  --shared    Use shared libs (don't bind statically)
+  -s SYSCONF  sett the sysconf directory ($PREFIX/etc)
 EOF
 }
 
@@ -93,10 +91,6 @@ do
       SYSCONF=$2
       shift 2
       ;;
-    --shared)
-      REBAR_CONF="shared-rebar.config"
-      shift 1
-      ;;
     *)
       display_help
       exit
@@ -137,7 +131,6 @@ REFUGE_USER = $REFUGE_USER
 OS = $OS
 ARCH = $ARCH
 VERSION = $VERSION
-REBAR_CONFIG = $REBAR_CONF
 EOF
 
 # finally, a few config files for local development nodes

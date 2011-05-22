@@ -20,17 +20,17 @@ include config.mk
 all: deps compile
 
 compile:
-	@./rebar -C $(REBAR_CONFIG) compile
+	@./rebar compile
 
 deps:
-	./rebar -C $(REBAR_CONFIG) get-deps
+	./rebar get-deps
 
 clean:
-	@./rebar -C $(REBAR_CONFIG) clean
+	@./rebar clean
 
 dist: compile
 	@rm -rf rel/refuge
-	@./rebar -C $(REBAR_CONFIG) generate
+	@./rebar generate
 
 distclean: clean
 	@rm -rf rel/refuge
@@ -88,6 +88,6 @@ dev: all
 	@rm -rf rel/tmpdata
 	@rm -rf rel/dev
 	@echo "==> Building development node (ports 15984/15986)"
-	@./rebar -C $(REBAR_CONFIG) generate target_dir=dev overlay_vars=dev.config
+	@./rebar generate target_dir=dev overlay_vars=dev.config
 	@echo "\n\
 Development node is built, and can be started using ./rel/dev/bin/refuge.\n" 
