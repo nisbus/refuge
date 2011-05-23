@@ -13,7 +13,7 @@
 # the License.
 
 ### BEGIN INIT INFO
-# Provides:          rcouch
+# Provides:          refuge
 # Required-Start:    $local_fs $remote_fs
 # Required-Stop:     $local_fs $remote_fs
 # Default-Start:     2 3 4 5
@@ -26,15 +26,15 @@ SCRIPT_OK=0
 SCRIPT_ERROR=1
 
 DESCRIPTION="database server"
-NAME=rcouch
+NAME=refuge
 SCRIPT_NAME=`basename $0`
-RCOUCH={{prefix}}/bin/rcouch
-RCOUCH_USER=rcouch
-CONFIGURATION_FILE={{prefix}}/etc/default/rcouch
+REFUGE={{prefix}}/bin/refuge
+REFUGE_USER=refuge
+CONFIGURATION_FILE={{prefix}}/etc/default/refuge
 RUN_DIR={{prefix}}/var/run
 LSB_LIBRARY=/lib/lsb/init-functions
 
-if test ! -x $RCOUCH; then
+if test ! -x $REFUGE; then
     exit $SCRIPT_ERROR
 fi
 
@@ -61,26 +61,26 @@ if test -r $LSB_LIBRARY; then
     . $LSB_LIBRARY
 fi
 
-start_rcouch () {
+start_refuge () {
     # Start Apache CouchDB as a background process.
 
-    command="$RCOUCH -u $RCOUCH_USER -b"
-    if test -n "$RCOUCH_STDOUT_FILE"; then
-        command="$command -o $RCOUCH_STDOUT_FILE"
+    command="$REFUGE -u $REFUGE_USER -b"
+    if test -n "$REFUGE_STDOUT_FILE"; then
+        command="$command -o $REFUGE_STDOUT_FILE"
     fi
-    if test -n "$RCOUCH_STDERR_FILE"; then
-        command="$command -e $RCOUCH_STDERR_FILE"
+    if test -n "$REFUGE_STDERR_FILE"; then
+        command="$command -e $REFUGE_STDERR_FILE"
     fi
-    if test -n "$RCOUCH_RESPAWN_TIMEOUT"; then
-        command="$command -r $RCOUCH_RESPAWN_TIMEOUT"
+    if test -n "$REFUGE_RESPAWN_TIMEOUT"; then
+        command="$command -r $REFUGE_RESPAWN_TIMEOUT"
     fi
-    if test -n "$RCOUCH_OPTIONS"; then
-        command="$command $RCOUCH_OPTIONS"
+    if test -n "$REFUGE_OPTIONS"; then
+        command="$command $REFUGE_OPTIONS"
     fi
     mkdir -p "$RUN_DIR"
-    if test -n "$RCOUCH_USER"; then
-        chown $RCOUCH_USER "$RUN_DIR"
-        if su $RCOUCH_USER -c "$command" > /dev/null; then
+    if test -n "$REFUGE_USER"; then
+        chown $REFUGE_USER "$RUN_DIR"
+        if su $REFUGE_USER -c "$command" > /dev/null; then
             return $SCRIPT_OK
         else
             return $SCRIPT_ERROR
@@ -94,15 +94,15 @@ start_rcouch () {
     fi
 }
 
-stop_rcouch () {
+stop_refuge () {
     # Stop the running Apache CouchDB process.
 
-    command="$RCOUCH -d"
-    if test -n "$RCOUCH_OPTIONS"; then
-        command="$command $RCOUCH_OPTIONS"
+    command="$REFUGE -d"
+    if test -n "$REFUGE_OPTIONS"; then
+        command="$command $REFUGE_OPTIONS"
     fi
-    if test -n "$RCOUCH_USER"; then
-        if su $RCOUCH_USER -c "$command" > /dev/null; then
+    if test -n "$REFUGE_USER"; then
+        if su $REFUGE_USER -c "$command" > /dev/null; then
             return $SCRIPT_OK
         else
             return $SCRIPT_ERROR
@@ -119,7 +119,7 @@ stop_rcouch () {
 display_status () {
     # Display the status of the running Apache CouchDB process.
 
-    $RCOUCH -s
+    $REFUGE -s
 }
 
 parse_script_option_list () {
@@ -128,7 +128,7 @@ parse_script_option_list () {
     case "$1" in
         start)
             log_daemon_msg "Starting $DESCRIPTION" $NAME
-            if start_rcouch; then
+            if start_refuge; then
                 log_end_msg $SCRIPT_OK
             else
                 log_end_msg $SCRIPT_ERROR
@@ -136,7 +136,7 @@ parse_script_option_list () {
             ;;
         stop)
             log_daemon_msg "Stopping $DESCRIPTION" $NAME
-            if stop_rcouch; then
+            if stop_refuge; then
                 log_end_msg $SCRIPT_OK
             else
                 log_end_msg $SCRIPT_ERROR
@@ -144,8 +144,8 @@ parse_script_option_list () {
             ;;
         restart)
             log_daemon_msg "Restarting $DESCRIPTION" $NAME
-            if stop_rcouch; then
-                if start_rcouch; then
+            if stop_refuge; then
+                if start_refuge; then
                     log_end_msg $SCRIPT_OK
                 else
                     log_end_msg $SCRIPT_ERROR
