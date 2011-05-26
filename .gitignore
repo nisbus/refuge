@@ -3,7 +3,7 @@
 *.Tpo
 *.beam
 erl_crash.dump
-rel/rcouch-*.tar.gz
+rel/refuge-*.tar.gz
 
 
 rel/archive
@@ -31,6 +31,6 @@ rel/tmpdata
 deps
 
 # rel
-rel/rcouch
+rel/refuge
 rel/dev.config
-rel/rcouch.config
+rel/refuge.config
