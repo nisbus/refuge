@@ -157,8 +157,11 @@ _set_refuge_home ()
 {
     REFUGE_HOME=$1
     VM_ARGS=${REFUGE_HOME}/vm.args
-    _add_config_file ${REFUGE_HOME}/local.ini
+    start_arguments="$start_arguments $REFUGE_HOME/local.ini"
+    background_start_arguments="$background_start_arguments -H $REFUGE_HOME"
     PIDFILE=${REFUGE_HOME}/run/refuge.pid
+    STDERR_FILE=${REFUGE_HOME}/refuge.stderr
+    STDOUT_FILE=${REFUGE_HOME}/refuge.stdout
 }
 
 start_refuge () 
@@ -264,11 +267,14 @@ parse_script_option_list ()
             -s) shift; check_status; exit;;
             -k) shift; KILL=true;;
             -d) shift; SHUTDOWN=true;;
-            -H) shift; _set_refuge_home "$1"; shift;;
+            -H) shift; REFUGE_HOME=$1; shift;;
             --) shift; break;;
             *) display_error "Unknown option: $1" >&2;;
         esac
     done
+    if test "$REFUGE_HOME" != ""; then
+      _set_refuge_home "$REFUGE_HOME"
+    fi
     if test "$KILL" = "true" -o "$SHUTDOWN" = "true"; then
         stop_refuge $KILL
     else
