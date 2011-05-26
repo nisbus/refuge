@@ -38,7 +38,7 @@ display_error () {
     fi
     echo >&2
     echo "Try \`"$basename" -h' for more information." >&2
-    false
+    exit 1
 }
 
 _make_refuge_home ()
@@ -98,7 +98,7 @@ _deploy_directories ()
 parse_script_option_list () 
 {
     set +e
-    options=`getopt hH:p:n:o $@`
+    options=`getopt hp:n:o $@`
     if test ! $? -eq 0; then
         display_error
     fi
@@ -115,12 +115,13 @@ parse_script_option_list ()
         esac
     done
     
-    REFUGE_HOME=$1
-    if test "$REFUGE_HOME" == ""; then
-        display_error
-    else
-        _make_refuge_home $REFUGE_HOME
+    # grabbing the instance home as the last argument *only*
+    if test $# != 1; then
+        display_error "Wrong syntax!" >&2
     fi
+
+    NEW_REFUGE_HOME=$1
+    _make_refuge_home $NEW_REFUGE_HOME
 }
 
 parse_script_option_list $@
