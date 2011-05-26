@@ -28,6 +28,7 @@ Usage: $basename [OPTION] HOME
   -h          display this help
   -p PORT     set the port to PORT (default: automatic)
   -n NODE     set the node name (default: 'refuge')
+  -o          override any file already present at this location
 EOF
 }
 
@@ -57,7 +58,7 @@ _deploy_vmargs ()
 {
     home=$1
     echo "  --Deploying vm.args in $home"
-    if test -f $/home/vm.args; then
+    if test -f $/home/vm.args -a "$OVERRIDE" == ""; then
         echo "      vm.args is already deployed!"
     else
         escaped_home=${home////\\/}
@@ -73,7 +74,7 @@ _deploy_localini ()
 {
     home=$1
     echo "  --Deploying local.ini in $home"
-    if test -f $home/local.ini; then
+    if test -f $home/local.ini -a "$OVERRIDE" == ""; then
         echo "      local.ini is already deployed!"
     else
         escaped_home=${home////\\/}
@@ -97,7 +98,7 @@ _deploy_directories ()
 parse_script_option_list () 
 {
     set +e
-    options=`getopt hH:p:n: $@`
+    options=`getopt hH:p:n:o $@`
     if test ! $? -eq 0; then
         display_error
     fi
@@ -108,6 +109,7 @@ parse_script_option_list ()
             -h) shift; display_help; exit;;
             -p) shift; REFUGE_PORT=$1; shift;;
             -n) shift; REFUGE_NODE_NAME=$1; shift;;
+            -o) shift; OVERRIDE="yes";;
             --) shift; break;;
             *) display_error "Unknown option: $1" >&2;;
         esac
