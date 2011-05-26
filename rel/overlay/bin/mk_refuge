@@ -58,7 +58,7 @@ _deploy_vmargs ()
 {
     home=$1
     echo "  --Deploying vm.args in $home"
-    if test -f $/home/vm.args -a "$OVERRIDE" == ""; then
+    if test -f $home/vm.args -a "$OVERRIDE" == ""; then
         echo "      vm.args is already deployed!"
     else
         escaped_home=${home////\\/}
