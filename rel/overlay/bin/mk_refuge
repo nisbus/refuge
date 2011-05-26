@@ -43,6 +43,10 @@ display_error () {
 _make_refuge_home ()
 {
     home=$1
+
+    # create the instance directory if needed
+    mkdir -p $home
+
     echo "--Deploying a new Refuge instance in $home"
     _deploy_directories $home
     _deploy_vmargs $home
@@ -85,19 +89,9 @@ _deploy_directories ()
 {
     home=$1
     echo "  --Creating directories lib and log"
-    if test -d $home/lib; then
-        echo "      lib is already present!"
-    else
-        mkdir $home/lib
-        echo "      Done!"
-    fi
-
-    if test -d $home/log; then
-        echo "      log is already present!"
-    else
-        mkdir $home/log
-        echo "      Done!"
-    fi
+    mkdir -p $home/lib
+    mkdir -p $home/log
+    echo "      Done!"
 }
 
 parse_script_option_list () 
