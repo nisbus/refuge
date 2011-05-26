@@ -48,7 +48,11 @@ _make_refuge_home ()
     # create the instance directory if needed
     mkdir -p $home
 
-    echo "--Deploying a new Refuge instance in $home"
+    if test "$OVERRIDE" == ""; then
+        echo "--Deploying a new Refuge instance in $home"
+    else
+        echo "--Overriding Refuge instance at $home"
+    fi
     _deploy_directories $home
     _deploy_vmargs $home
     _deploy_localini $home
@@ -58,32 +62,24 @@ _deploy_vmargs ()
 {
     home=$1
     echo "  --Deploying vm.args in $home"
-    if test -f $home/vm.args -a "$OVERRIDE" == ""; then
-        echo "      vm.args is already deployed!"
-    else
-        escaped_home=${home////\\/}
-        cat $TEMPLATES_DIR/vm.args \
-            | sed "s/{{refuge_home}}/$escaped_home/" \
-            | sed "s/{{node_name}}/$REFUGE_NODE_NAME/" \
-            > $home/vm.args
-        echo "      Done!"
-    fi
+    escaped_home=${home////\\/}
+    cat $TEMPLATES_DIR/vm.args \
+        | sed "s/{{refuge_home}}/$escaped_home/" \
+        | sed "s/{{node_name}}/$REFUGE_NODE_NAME/" \
+        > $home/vm.args
+    echo "      Done!"
 }
 
 _deploy_localini ()
 {
     home=$1
     echo "  --Deploying local.ini in $home"
-    if test -f $home/local.ini -a "$OVERRIDE" == ""; then
-        echo "      local.ini is already deployed!"
-    else
-        escaped_home=${home////\\/}
-        cat $TEMPLATES_DIR/local.ini \
-            | sed "s/{{refuge_home}}/$escaped_home/" \
-            | sed "s/{{refuge_port}}/$REFUGE_PORT/" \
-            > $home/local.ini
-        echo "      Done!"
-    fi
+    escaped_home=${home////\\/}
+    cat $TEMPLATES_DIR/local.ini \
+        | sed "s/{{refuge_home}}/$escaped_home/" \
+        | sed "s/{{refuge_port}}/$REFUGE_PORT/" \
+        > $home/local.ini
+    echo "      Done!"
 }
 
 _deploy_directories ()
@@ -93,6 +89,22 @@ _deploy_directories ()
     mkdir -p $home/lib
     mkdir -p $home/log
     echo "      Done!"
+}
+
+_check_instance ()
+{
+    home=$1
+
+    result="ok"
+    if test -f $home/local.ini -o -f $home/vm.args; then
+        result="already_there"
+    fi
+
+    if test "$result" == "already_there" -a "$OVERRIDE" == ""; then
+        echo "/!\ The refuge instance located at $home already has configuration files!"
+        echo "Try again with -o to override"
+        exit 1
+    fi
 }
 
 parse_script_option_list () 
@@ -121,6 +133,7 @@ parse_script_option_list ()
     fi
 
     NEW_REFUGE_HOME=$1
+    _check_instance $NEW_REFUGE_HOME
     _make_refuge_home $NEW_REFUGE_HOME
 }
 
