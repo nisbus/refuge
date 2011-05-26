@@ -65,6 +65,7 @@ Usage: $basename [OPTION]
   -s          display the status of the background process  
   -o FILE     redirect background stdout to FILE (defaults to $STDOUT_FILE)
   -e FILE     redirect background stderr to FILE (defaults to $STDERR_FILE)
+  -H HOME     use local settings located in HOME
 EOF
 }
 
@@ -152,6 +153,14 @@ EOF
     return 1 
 }
 
+_set_refuge_home ()
+{
+    REFUGE_HOME=$1
+    VM_ARGS=${REFUGE_HOME}/vm.args
+    _add_config_file ${REFUGE_HOME}/local.ini
+    PIDFILE=${REFUGE_HOME}/run/refuge.pid
+}
+
 start_refuge () 
 {
     command="$BINDIR/erlexec \
@@ -232,7 +241,7 @@ parse_script_option_list ()
 {
     _load_config    
     set +e
-    options=`getopt ha:A:nbp:u:r:Ro:e:skdc $@`
+    options=`getopt ha:A:nbp:u:r:Ro:e:skdcH: $@`
     if test ! $? -eq 0; then
         display_error
     fi
@@ -255,6 +264,7 @@ parse_script_option_list ()
             -s) shift; check_status; exit;;
             -k) shift; KILL=true;;
             -d) shift; SHUTDOWN=true;;
+            -H) shift; _set_refuge_home "$1"; shift;;
             --) shift; break;;
             *) display_error "Unknown option: $1" >&2;;
         esac
