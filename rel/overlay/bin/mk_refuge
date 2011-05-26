@@ -16,6 +16,7 @@ ERTS_BIN_DIR=$(cd ${0%/*} && pwd)
 export ROOTDIR=${ERTS_BIN_DIR%/*}
 TEMPLATES_DIR=$ROOTDIR/share/templates
 REFUGE_PORT=0
+REFUGE_NODE_NAME=refuge
 
 basename=`basename $0`
 
@@ -26,6 +27,7 @@ Usage: $basename [OPTION] HOME
 
   -h          display this help
   -p PORT     set the port to PORT (default: automatic)
+  -n NODE     set the node name (default: 'refuge')
 EOF
 }
 
@@ -54,7 +56,11 @@ _deploy_vmargs ()
     if test -f $/home/vm.args; then
         echo "      vm.args is already deployed!"
     else
-        cp $ROOTDIR/etc/refuge/vm.args $home
+        escaped_home=${home////\\/}
+        cat $TEMPLATES_DIR/vm.args \
+            | sed "s/{{refuge_home}}/$escaped_home/" \
+            | sed "s/{{node_name}}/$REFUGE_NODE_NAME/" \
+            > $home/vm.args
         echo "      Done!"
     fi
 }
@@ -97,7 +103,7 @@ _deploy_directories ()
 parse_script_option_list () 
 {
     set +e
-    options=`getopt hH:p: $@`
+    options=`getopt hH:p:n: $@`
     if test ! $? -eq 0; then
         display_error
     fi
@@ -107,6 +113,7 @@ parse_script_option_list ()
         case "$1" in
             -h) shift; display_help; exit;;
             -p) shift; REFUGE_PORT=$1; shift;;
+            -n) shift; REFUGE_NODE_NAME=$1; shift;;
             --) shift; break;;
             *) display_error "Unknown option: $1" >&2;;
         esac
