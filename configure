@@ -135,17 +135,19 @@ EOF
 
 # finally, a few config files for local development nodes
 
-cat > rel/dev.config << EOF
-{prefix, "$DIRPATH/rel/dev"}.
-{data_dir, "$DIRPATH/rel/tmpdata/dev"}.
-{view_dir, "$DIRPATH/rel/tmpdata/dev"}.
-{sysconf_dir, "$DIRPATH/rel/dev/etc"}.
-{run_dir, "$DIRPATH/rel/dev/var/run"}.
-{log_dir, "$DIRPATH/rel/dev/var/log"}.
+for i in 1 2 3; do
+cat > rel/dev$i.config << EOF
+{prefix, "$DIRPATH/rel/dev$i"}.
+{data_dir, "$DIRPATH/rel/tmpdata/dev$i"}.
+{view_dir, "$DIRPATH/rel/tmpdata/dev$i"}.
+{sysconf_dir, "$DIRPATH/rel/dev$i/etc"}.
+{run_dir, "$DIRPATH/rel/dev$i/var/run"}.
+{log_dir, "$DIRPATH/rel/dev$i/var/log"}.
 {user, "$REFUGE_USER"}.
-{node_name, "-name dev@127.0.0.1"}.
-{couchdb_port, 15984}.
-{ssl_port, 16986}.
+{node_name, "-name dev$i@127.0.0.1"}.
+{couchdb_port, `expr 10000 \* $i + 5984`}.
+{ssl_port, `expr 10000 \* $i + 5986`}.
 EOF
+done
 
 cat rel/refuge.config

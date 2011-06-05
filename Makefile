@@ -85,9 +85,14 @@ archive: dist
 		tar -cvzf ../refuge-$(VERSION)-$(OS)-$(ARCH).tar.gz .)
 
 dev: all
-	@rm -rf rel/tmpdata
-	@rm -rf rel/dev
-	@echo "==> Building development node (ports 15984/15986)"
-	@./rebar generate target_dir=dev overlay_vars=dev.config
+	@rm -rf rel/tmpdata1 rel/tmpdata2 rel/tmpdata3
+	@rm -rf rel/dev1 rel/dev2 rel/dev3
+	@echo "==> Building development node #1 (ports 15984/15986)"
+	@./rebar generate target_dir=dev1 overlay_vars=dev1.config
+	@echo "==> Building development node #2 (ports 25984/25986)"
+	@./rebar generate target_dir=dev2 overlay_vars=dev2.config
+	@echo "==> Building development node #3 (ports 35984/35986)"
+	@./rebar generate target_dir=dev3 overlay_vars=dev3.config
 	@echo "\n\
-Development node is built, and can be started using ./rel/dev/bin/refuge.\n" 
+Development nodes are built, and can be started using ./rel/dev[123]/bin/refuge.\n"
+
